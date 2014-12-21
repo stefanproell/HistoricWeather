@@ -1,8 +1,7 @@
 package API;
 
 import WeatherData.HibernateUtil;
-import WeatherData.WeatherHour;
-import com.github.dvdme.ForecastIOLib.FIODaily;
+import WeatherData.WeatherData;
 import com.github.dvdme.ForecastIOLib.FIOHourly;
 import com.github.dvdme.ForecastIOLib.ForecastIO;
 import com.google.code.geocoder.Geocoder;
@@ -39,13 +38,19 @@ public class RetrieveData {
 
     }
 
-    private void persist(WeatherHour weatherHour){
-        this.session = HibernateUtil.getSessionFactory().openSession();
-        this.session.beginTransaction();
-        this.session.save(weatherHour);
-        this.session.getTransaction().commit();
-        this.session.flush();
-        this.session.close();
+    private void persist(WeatherData weatherData){
+
+     //   if(this.recordExists(weatherData) == false){
+
+            this.session = HibernateUtil.getSessionFactory().openSession();
+            this.session.beginTransaction();
+            this.session.saveOrUpdate(weatherData);
+            this.session.getTransaction().commit();
+            this.session.flush();
+            this.session.close();
+      //  }
+
+
     }
 
     public void retrieve() {
@@ -86,9 +91,9 @@ public class RetrieveData {
         fio.setTime("2013-12-24T17:00:00-0400");
 
         fio.getForecast(latitude, longitude);
-        System.out.println("Latitude: " + fio.getLatitude());
-        System.out.println("Longitude: " + fio.getLongitude());
-        System.out.println("Timezone: " + fio.getTimezone());
+      //  System.out.println("Latitude: " + fio.getLatitude());
+      //  System.out.println("Longitude: " + fio.getLongitude());
+      //  System.out.println("Timezone: " + fio.getTimezone());
 
         String key ="";
         String value ="";
@@ -126,14 +131,14 @@ public class RetrieveData {
             /**
              * Create the weather object
              */
-            WeatherHour hourData = new WeatherHour();
-            System.out.print("---------- "+weatherDataHashMap.get("Hour"));
+            WeatherData hourData = new WeatherData();
+            System.out.println("---------- "+weatherDataHashMap.get("Hour"));
             hourData.setHour(Integer.parseInt(weatherDataHashMap.get("Hour")));
             hourData.setSummary(weatherDataHashMap.get("summary"));
             hourData.setIcon(weatherDataHashMap.get("icon"));
             hourData.setWindspeed(Double.parseDouble(weatherDataHashMap.get("windSpeed")));
             Date measureData = this.getDateFromString(weatherDataHashMap.get("time"));
-            hourData.setTime(measureData);
+            hourData.setWeather_timestamp(measureData);
             hourData.setHumidity(Double.parseDouble(weatherDataHashMap.get("humidity")));
             hourData.setVisibility(Double.parseDouble(weatherDataHashMap.get("visibility")));
             hourData.setWindBearing(Integer.parseInt(weatherDataHashMap.get("windBearing")));
@@ -146,9 +151,6 @@ public class RetrieveData {
             hourData.setAddress(address);
             hourData.setLatitude(Double.parseDouble(latitude));
             hourData.setLongitude(Double.parseDouble(longitude));
-
-
-
 
 
             this.persist(hourData);
@@ -188,6 +190,31 @@ public class RetrieveData {
         return date;
 
 
+    }
+
+    /**
+     * Check if the record is already in the DB
+     * @param hourData
+     * @return
+     */
+    public Boolean recordExists (WeatherData hourData) {
+        this.session = HibernateUtil.getSessionFactory().openSession();
+        Query query = this.session.
+
+        createQuery("select identifier FROM WeatherData WHERE latitude = :latitude AND longitude =:longitude AND weather_timestamp =:weather_timestamp" );
+        query.setDouble("latitude", hourData.getLatitude());
+        query.setDouble("longitude" , hourData.getLongitude());
+        query.setDate("weather_timestamp", hourData.getWeather_timestamp());
+
+       // System.out.println("Query: " + query.getQueryString()+ " parameters: "+hourData.getLatitude()+" long " + hourData.getLongitude()+ " time: " + hourData.getWeather_timestamp());
+        boolean exists = false;
+
+
+        if(query.uniqueResult()==null){
+            exists = true;
+            System.out.println("Record exists!");
+        };
+        return exists;
     }
 
 }

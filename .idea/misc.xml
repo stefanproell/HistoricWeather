@@ -121,8 +121,5 @@
       <Port>5050</Port>
     </configuration>
   </component>
-  <component name="SvnConfiguration">
-    <configuration>$USER_HOME$/.subversion</configuration>
-  </component>
 </project>
 

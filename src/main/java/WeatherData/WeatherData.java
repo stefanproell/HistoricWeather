@@ -10,13 +10,18 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name="WeatherData")
-public class WeatherHour {
+@Table(name="WeatherData", uniqueConstraints=
+@UniqueConstraint(columnNames={"latitude", "longitude", "weather_timestamp", "insert_timestamp"}))
+
+public class WeatherData {
     int hour;
     String summary;
     String icon;
     Double windspeed;
     Date time;
+
+
+    Date weather_timestamp;
     Double humidity;
     Double visibility;
     int windBearing;
@@ -26,6 +31,16 @@ public class WeatherHour {
     Double dewPoint;
     Double temperature;
     int identifier;
+    Date insert_time;
+
+    @Column(name="insert_timestamp")
+    public Date getInsert_time() {
+        return insert_time;
+    }
+
+    public void setInsert_time(Date insert_time) {
+        this.insert_time = insert_time;
+    }
 
     @Column(name="longitude")
     public Double getLongitude() {
@@ -70,7 +85,9 @@ public class WeatherHour {
         this.identifier = identifier;
     }
 
-    public WeatherHour() {
+    public WeatherData() {
+        Date currentDate = new Date();
+        this.setInsert_time(currentDate);
     }
 
     @Column(name="hour")
@@ -110,13 +127,16 @@ public class WeatherHour {
     }
 
     @Column(name="weather_timestamp")
-    public Date getTime() {
-        return time;
+    public Date getWeather_timestamp() {
+        return weather_timestamp;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setWeather_timestamp(Date weather_timestamp) {
+        this.weather_timestamp = weather_timestamp;
     }
+
+
+
 
     @Column(name="humidity")
     public Double getHumidity() {
