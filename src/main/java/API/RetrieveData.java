@@ -15,12 +15,10 @@ import org.hibernate.Session;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by stefan on 21.12.14.
@@ -53,14 +51,40 @@ public class RetrieveData {
 
     }
 
-    public void retrieve() {
+    public void getYears(String location, String dateString, int amountYears){
+        Date startDate = this.getDateFromISO8601String(dateString);
+
+        Calendar cal = null;
+        try {
+            cal = this.toCalendar(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+        for(int i = 0; i < amountYears;i++){
+            cal.add(Calendar.YEAR,-1);
+            Date newDate = cal.getTime();
+            String newDateString = this.fromCalendar(cal);
+            System.out.println("Current Date: "  + this.fromCalendar(cal));
+            this.retrieve(location,newDateString);
+
+        }
+
+
+    }
+
+    public void retrieve(String location, String dateString) {
         String latitude = "";
         String longitude = "";
         String address = "";
         HashMap<String,String> weatherDataHashMap = new HashMap();
 
         final Geocoder geocoder = new Geocoder();
-        GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress("Reutte,Tirol, Austria").setLanguage("en").getGeocoderRequest();
+        GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(location).setLanguage("en").getGeocoderRequest();
         GeocodeResponse geocoderResponse = null;
 
         try {
@@ -88,7 +112,7 @@ public class RetrieveData {
 
         fio.setLang(ForecastIO.LANG_ENGLISH);
 
-        fio.setTime("2013-12-24T17:00:00-0400");
+        fio.setTime(dateString);
 
         fio.getForecast(latitude, longitude);
       //  System.out.println("Latitude: " + fio.getLatitude());
@@ -120,7 +144,10 @@ public class RetrieveData {
 
                 key = h[j];
                 value = hourly.getHour(i).getByKey(h[j]);
-
+                if (value == null){
+                    System.out.println("value war NULL");
+                    value="";
+                }
                 System.out.println(key + ": " + value);
                 System.out.println("\n");
 
@@ -132,22 +159,22 @@ public class RetrieveData {
              * Create the weather object
              */
             WeatherData hourData = new WeatherData();
-            System.out.println("---------- "+weatherDataHashMap.get("Hour"));
-            hourData.setHour(Integer.parseInt(weatherDataHashMap.get("Hour")));
+            System.out.println("---------- " + weatherDataHashMap.get("Hour"));
+            hourData.setHour(this.parseIntValue(weatherDataHashMap.get("Hour")));
             hourData.setSummary(weatherDataHashMap.get("summary"));
             hourData.setIcon(weatherDataHashMap.get("icon"));
-            hourData.setWindspeed(Double.parseDouble(weatherDataHashMap.get("windSpeed")));
+            hourData.setWindspeed(this.parseDoubleValue(weatherDataHashMap.get("windSpeed")));
             Date measureData = this.getDateFromString(weatherDataHashMap.get("time"));
             hourData.setWeather_timestamp(measureData);
-            hourData.setHumidity(Double.parseDouble(weatherDataHashMap.get("humidity")));
-            hourData.setVisibility(Double.parseDouble(weatherDataHashMap.get("visibility")));
-            hourData.setWindBearing(Integer.parseInt(weatherDataHashMap.get("windBearing")));
-            hourData.setApparentTemperature(Double.parseDouble(weatherDataHashMap.get("apparentTemperature")));
-            hourData.setWindBearing(Integer.parseInt(weatherDataHashMap.get("windBearing")));
-            hourData.setPrecipProbability(Double.parseDouble(weatherDataHashMap.get("precipProbability")));
-            hourData.setPrecipIntensity(Double.parseDouble(weatherDataHashMap.get("precipIntensity")));
-            hourData.setDewPoint(Double.parseDouble(weatherDataHashMap.get("dewPoint")));
-            hourData.setTemperature(Double.parseDouble(weatherDataHashMap.get("temperature")));
+            hourData.setHumidity(this.parseDoubleValue(weatherDataHashMap.get("humidity")));
+            hourData.setVisibility(this.parseDoubleValue(weatherDataHashMap.get("visibility")));
+            hourData.setWindBearing(this.parseIntValue(weatherDataHashMap.get("windBearing")));
+            hourData.setApparentTemperature(this.parseDoubleValue(weatherDataHashMap.get("apparentTemperature")));
+            hourData.setWindBearing(this.parseIntValue(weatherDataHashMap.get("windBearing")));
+            hourData.setPrecipProbability(this.parseDoubleValue(weatherDataHashMap.get("precipProbability")));
+            hourData.setPrecipIntensity(this.parseDoubleValue(weatherDataHashMap.get("precipIntensity")));
+            hourData.setDewPoint(this.parseDoubleValue(weatherDataHashMap.get("dewPoint")));
+            hourData.setTemperature(this.parseDoubleValue(weatherDataHashMap.get("temperature")));
             hourData.setAddress(address);
             hourData.setLatitude(latitude);
             hourData.setLongitude(longitude);
@@ -177,6 +204,27 @@ public class RetrieveData {
 
     }
 
+    private Double parseDoubleValue(String input){
+        if(input ==null){
+            return null;
+        } else{
+            return Double.parseDouble(input);
+        }
+
+
+    }
+
+
+    private int parseIntValue(String input){
+        if(input ==null){
+            return -1;
+        } else{
+            return Integer.parseInt(input);
+        }
+
+
+    }
+
     private Date getDateFromString(String dateString){
 
         DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS");
@@ -192,6 +240,24 @@ public class RetrieveData {
 
 
     }
+
+    private Date getDateFromISO8601String(String dateString){
+
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Date date = null;
+        try {
+            date = format.parse(dateString);
+            System.out.println("DATE " + date.getHours() +" m "+  date.getMinutes() +" s "+  date.getSeconds());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return date;
+
+
+    }
+
+
 
     private String getMySQLDateFormatFromString(Date inputDate){
 
@@ -236,4 +302,23 @@ public class RetrieveData {
         return exists;
     }
 
+    /** Transform Calendar to ISO 8601 string. */
+    public String fromCalendar(final Calendar calendar) {
+        Date date = calendar.getTime();
+        String formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .format(date);
+        return formatted;
+    }
+
+
+
+    /** Transform ISO 8601 string to Calendar. */
+    public Calendar toCalendar(final String iso8601string)
+            throws ParseException {
+        Calendar calendar = GregorianCalendar.getInstance();
+
+        Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(iso8601string);
+        calendar.setTime(date);
+        return calendar;
+    }
 }

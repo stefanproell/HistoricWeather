@@ -21,7 +21,11 @@ public class HistoricalWeatherMain {
     public static void main(String[] args) {
         System.out.println("Weatherdata");
         RetrieveData dataRetrieval = new RetrieveData();
-        dataRetrieval.retrieve();
+
+        String dateString =   "2013-12-24T17:00:00";
+
+        //dataRetrieval.retrieve("Reutte,Tirol, Austria", dateString);
+        dataRetrieval.getYears("Maurach, Achensee, Austria", dateString,30);
 
         System.exit(0);
 
