@@ -2,6 +2,8 @@ package WeatherData;
 
 
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -43,20 +45,20 @@ public class WeatherData {
     }
 
     @Column(name="longitude")
-    public Double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
     @Column(name="latitude")
-    public Double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
@@ -69,8 +71,8 @@ public class WeatherData {
         this.address = address;
     }
 
-    Double longitude;
-    Double latitude;
+    String longitude;
+    String latitude;
     String address;
 
 
@@ -127,6 +129,7 @@ public class WeatherData {
     }
 
     @Column(name="weather_timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getWeather_timestamp() {
         return weather_timestamp;
     }

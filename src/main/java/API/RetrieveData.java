@@ -40,15 +40,15 @@ public class RetrieveData {
 
     private void persist(WeatherData weatherData){
 
-     //   if(this.recordExists(weatherData) == false){
+        if(!this.recordExists(weatherData)){
 
             this.session = HibernateUtil.getSessionFactory().openSession();
             this.session.beginTransaction();
-            this.session.saveOrUpdate(weatherData);
+            this.session.save(weatherData);
             this.session.getTransaction().commit();
             this.session.flush();
             this.session.close();
-      //  }
+    }
 
 
     }
@@ -149,8 +149,8 @@ public class RetrieveData {
             hourData.setDewPoint(Double.parseDouble(weatherDataHashMap.get("dewPoint")));
             hourData.setTemperature(Double.parseDouble(weatherDataHashMap.get("temperature")));
             hourData.setAddress(address);
-            hourData.setLatitude(Double.parseDouble(latitude));
-            hourData.setLongitude(Double.parseDouble(longitude));
+            hourData.setLatitude(latitude);
+            hourData.setLongitude(longitude);
 
 
             this.persist(hourData);
@@ -179,15 +179,26 @@ public class RetrieveData {
 
     private Date getDateFromString(String dateString){
 
-        DateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:ss", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS");
         Date date = null;
         try {
             date = format.parse(dateString);
+            System.out.println("DATE " + date.getHours() +" m "+  date.getMinutes() +" s "+  date.getSeconds());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return date;
+
+
+    }
+
+    private String getMySQLDateFormatFromString(Date inputDate){
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return sdf.format(inputDate);
 
 
     }
@@ -199,21 +210,29 @@ public class RetrieveData {
      */
     public Boolean recordExists (WeatherData hourData) {
         this.session = HibernateUtil.getSessionFactory().openSession();
-        Query query = this.session.
 
-        createQuery("select identifier FROM WeatherData WHERE latitude = :latitude AND longitude =:longitude AND weather_timestamp =:weather_timestamp" );
-        query.setDouble("latitude", hourData.getLatitude());
-        query.setDouble("longitude" , hourData.getLongitude());
-        query.setDate("weather_timestamp", hourData.getWeather_timestamp());
-
-       // System.out.println("Query: " + query.getQueryString()+ " parameters: "+hourData.getLatitude()+" long " + hourData.getLongitude()+ " time: " + hourData.getWeather_timestamp());
         boolean exists = false;
 
 
-        if(query.uniqueResult()==null){
+    String queryString = "select identifier FROM WeatherData WHERE latitude = "+hourData.getLatitude()+" AND longitude = "+ hourData.getLongitude()
+            + " AND weather_timestamp = \'" + this.getMySQLDateFormatFromString(hourData.getWeather_timestamp())+"\'";
+
+
+        Query query = this.session.createQuery(queryString);
+
+        System.out.println("Query: " +queryString);
+
+        List result = query.list();
+        int count = result.size();
+        if(count >0){
+            System.out.println("record exists, count is " + count);
             exists = true;
-            System.out.println("Record exists!");
-        };
+        } else{
+            exists = false;
+        }
+
+
+        this.session.close();
         return exists;
     }
 
