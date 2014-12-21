@@ -25,7 +25,7 @@ public class HistoricalWeatherMain {
         String dateString =   "2013-12-24T17:00:00";
 
         //dataRetrieval.retrieve("Reutte,Tirol, Austria", dateString);
-        dataRetrieval.getYears("Maurach, Achensee, Austria", dateString,30);
+        dataRetrieval.getYears("Eben am Achensee, Tirol, Österreich", dateString,5);
 
         System.exit(0);
 

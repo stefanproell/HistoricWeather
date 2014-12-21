@@ -175,6 +175,7 @@ public class RetrieveData {
             hourData.setPrecipIntensity(this.parseDoubleValue(weatherDataHashMap.get("precipIntensity")));
             hourData.setDewPoint(this.parseDoubleValue(weatherDataHashMap.get("dewPoint")));
             hourData.setTemperature(this.parseDoubleValue(weatherDataHashMap.get("temperature")));
+            hourData.setPrecipType(this.removeQuotes(weatherDataHashMap.get("precipType")));
             hourData.setAddress(address);
             hourData.setLatitude(latitude);
             hourData.setLongitude(longitude);
@@ -184,6 +185,8 @@ public class RetrieveData {
 
 
         }
+
+
 
 
 /*
@@ -203,6 +206,17 @@ public class RetrieveData {
         }*/
 
     }
+
+    private String removeQuotes(String input){
+        String output = null;
+        if (input != null){
+            output= input.replaceAll("^\"|\"$", "");
+        }
+
+        return output;
+    }
+
+
 
     private Double parseDoubleValue(String input){
         if(input ==null){

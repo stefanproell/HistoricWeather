@@ -75,6 +75,17 @@ public class WeatherData {
     String latitude;
     String address;
 
+    public String getPrecipType() {
+        return precipType;
+    }
+
+    public void setPrecipType(String precipType) {
+        this.precipType = precipType;
+    }
+
+    @Column(name="precipType")
+    String precipType;
+
 
 
     @Id
