@@ -22,10 +22,10 @@ public class HistoricalWeatherMain {
         System.out.println("Weatherdata");
         RetrieveData dataRetrieval = new RetrieveData();
 
-        String dateString =   "2013-12-24T17:00:00";
+        String dateString =   "2013-12-24T12:00:00";
 
         //dataRetrieval.retrieve("Reutte,Tirol, Austria", dateString);
-        dataRetrieval.getYears("Eben am Achensee, Tirol, Österreich", dateString,5);
+        dataRetrieval.getYears("Reutte in Tirol", dateString,70);
 
         System.exit(0);
 
