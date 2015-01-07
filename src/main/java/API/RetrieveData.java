@@ -1,7 +1,10 @@
 package API;
 
 
-import WeatherData.*;
+
+import WeatherData.Helpers;
+import WeatherData.WeatherData;
+import WeatherData.HibernateUtil;
 import com.github.dvdme.ForecastIOLib.FIOHourly;
 import com.github.dvdme.ForecastIOLib.ForecastIO;
 import com.google.code.geocoder.Geocoder;
@@ -12,6 +15,7 @@ import com.google.code.geocoder.model.GeocoderRequest;
 import com.google.code.geocoder.model.GeocoderResult;
 import org.hibernate.Query;
 import org.hibernate.Session;
+
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -24,16 +28,25 @@ import java.util.*;
  */
 public class RetrieveData {
     private Session session;
-
+    private String APIKEY;
 
     public RetrieveData() {
-        this.init();
+
+
+        // set the API key
+        Helpers helper;
+        helper = new Helpers();
+        String filename = "api.properties";
+        Properties prop = null;
+        prop = Helpers.readPropertyFile(filename);
+
+
+        this.APIKEY = prop.getProperty("forecast-key");
+
+
     }
 
-    private void init(){
 
-
-    }
 
     private void persist(WeatherData weatherData){
 
@@ -106,7 +119,7 @@ public class RetrieveData {
 
         }
 
-        ForecastIO fio = new ForecastIO("211150e7d2e3257327aa43570d0f2d85"); //instantiate the class with the API key.
+        ForecastIO fio = new ForecastIO(this.APIKEY); //instantiate the class with the API key.
         fio.setUnits(ForecastIO.UNITS_SI);             //sets the units as SI - optional
 
         fio.setLang(ForecastIO.LANG_ENGLISH);
