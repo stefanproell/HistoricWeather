@@ -1,4 +1,4 @@
-package at.stefanproell.PersistentIdentifierMockup;
+package WeatherData;
 
 import WeatherData.Helpers;
 import org.hibernate.HibernateException;

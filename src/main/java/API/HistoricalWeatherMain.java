@@ -20,12 +20,22 @@ public class HistoricalWeatherMain {
 
     public static void main(String[] args) {
         System.out.println("Weatherdata");
+
+        // How many years should be retrieved
+        final int YEARS = 5;
+
+
+        // Instantiate Retrieval Object
         RetrieveData dataRetrieval = new RetrieveData();
 
+        // The date we are interested in
         String dateString =   "2013-12-24T12:00:00";
 
-        //dataRetrieval.retrieve("Reutte,Tirol, Austria", dateString);
-        dataRetrieval.getYears("Reutte in Tirol", dateString,70);
+        // Retrieve single date
+        dataRetrieval.retrieve("Reutte,Tirol, Austria", dateString);
+
+        // Retrieve
+        dataRetrieval.getYears("Reutte in Tirol", dateString,YEARS);
 
         System.exit(0);
 

@@ -1,7 +1,7 @@
 package API;
 
-import WeatherData.HibernateUtil;
-import WeatherData.WeatherData;
+
+import WeatherData.*;
 import com.github.dvdme.ForecastIOLib.FIOHourly;
 import com.github.dvdme.ForecastIOLib.ForecastIO;
 import com.google.code.geocoder.Geocoder;
@@ -15,7 +15,6 @@ import org.hibernate.Session;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -158,7 +157,8 @@ public class RetrieveData {
             /**
              * Create the weather object
              */
-            WeatherData hourData = new WeatherData();
+            WeatherData hourData;
+            hourData = new WeatherData();
             System.out.println("---------- " + weatherDataHashMap.get("Hour"));
             hourData.setHour(this.parseIntValue(weatherDataHashMap.get("Hour")));
             hourData.setSummary(weatherDataHashMap.get("summary"));
