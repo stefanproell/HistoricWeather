@@ -89,14 +89,14 @@ public class RetrieveData {
 
     }
 
-    public void retrieve(String location, String dateString) {
+    public void retrieve(String locationAddress, String dateString) {
         String latitude = "";
         String longitude = "";
         String address = "";
         HashMap<String,String> weatherDataHashMap = new HashMap();
 
         final Geocoder geocoder = new Geocoder();
-        GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(location).setLanguage("en").getGeocoderRequest();
+        GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(locationAddress).setLanguage("en").getGeocoderRequest();
         GeocodeResponse geocoderResponse = null;
 
         try {
