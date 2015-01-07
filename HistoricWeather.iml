@@ -10,7 +10,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.dvdme:ForecastIOLib:1.5.1" level="project" />
     <orderEntry type="library" name="Maven: com.eclipsesource.minimal-json:minimal-json:0.9.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.geocoder-java:geocoder-java:0.16" level="project" />
