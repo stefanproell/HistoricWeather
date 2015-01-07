@@ -2,13 +2,13 @@ package WeatherData;
 
 
 
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Created by stefan on 21.12.14.
+ * Maps the JSON data to a Java object, which can be persisted.
  */
 
 @Entity
