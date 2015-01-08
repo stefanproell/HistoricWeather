@@ -5,7 +5,7 @@ This is a small sample application showing how to retrieve and process data from
 The tool is written in Java and uses thw following technologies:
 
     Google Geo-Coding API to retrieve longitude and latitude coordinates
-    Forecast IO to retrieve the weather data fpr a specific location
+    Forecast IO to retrieve the weather data for a specific location
     MySQL database to store the data
     Hibernate
     Maven
