@@ -25,6 +25,8 @@
         <module name="HistoricWeather" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="HistoricWeather" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
-
